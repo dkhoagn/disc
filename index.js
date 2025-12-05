@@ -1,9 +1,8 @@
+require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
 const { joinVoiceChannel, getVoiceConnection } = require("@discordjs/voice");
 const { Player } = require("discord-player");
-const { DefaultExtractors } = require("@discord-player/extractor");
 
-// Khởi tạo client Discord
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -21,11 +20,11 @@ const player = new Player(client, {
   }
 });
 
-// Khi bot sẵn sàng (discord.js v15 dùng clientReady)
-client.once("clientReady", async () => {
+// Khi bot sẵn sàng
+client.once("ready", async () => {
   console.log(`✅ Bot đã online với tên ${client.user.tag}`);
-  await player.extractors.loadMulti(DefaultExtractors);
-  console.log("🎵 Extractors đã được load (YouTube, Spotify, SoundCloud...)!");
+  await player.extractors.loadDefault();
+  console.log("🎵 Extractors đã được load!");
 });
 
 // Sự kiện khi bài hát bắt đầu phát
@@ -114,21 +113,21 @@ client.on("messageCreate", async (msg) => {
   if (cmd === "loop") {
     const queue = player.nodes.get(msg.guild.id);
     if (!queue) return msg.reply("❌ Không có nhạc đang phát!");
-    queue.repeatMode = 1; // 1 = loop bài hát
+    queue.setRepeatMode(1);
     msg.reply("🔁 Đã bật loop bài hát!");
   }
 
   if (cmd === "loopqueue") {
     const queue = player.nodes.get(msg.guild.id);
     if (!queue) return msg.reply("❌ Không có nhạc đang phát!");
-    queue.repeatMode = 2; // 2 = loop toàn bộ queue
+    queue.setRepeatMode(2);
     msg.reply("🔁 Đã bật loop toàn queue!");
   }
 
   if (cmd === "shuffle") {
     const queue = player.nodes.get(msg.guild.id);
     if (!queue) return msg.reply("❌ Không có nhạc đang phát!");
-    queue.tracks.shuffle(); // API có sẵn trong v6
+    queue.tracks.shuffle();
     msg.reply("🔀 Đã shuffle queue!");
   }
 
@@ -154,5 +153,4 @@ client.on("messageCreate", async (msg) => {
   }
 });
 
-require("dotenv").config();
 client.login(process.env.TOKEN);
