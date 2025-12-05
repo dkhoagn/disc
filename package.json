@@ -1,4 +1,11 @@
 {
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "A Discord music bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
     "@discordjs/opus": "^0.10.0",
